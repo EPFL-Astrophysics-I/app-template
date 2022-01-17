@@ -18,39 +18,32 @@ public class Navigation : MonoBehaviour
     private RectTransform bubbles;
     private int currentSlideIndex;
 
-    private void Awake()
+    //private void Awake()
+    //{
+    //    Transform slides = transform.parent.Find("Slides");
+    //    if (slides == null)
+    //    {
+    //        Debug.LogWarning("Navigation did not find GameObject called Slides in " + transform.parent);
+    //        return;
+    //    }
+
+    //    GenerateBubbles(slides.childCount);
+    //}
+
+    //private void Start()
+    //{
+    //    currentSlideIndex = 0;
+    //    ChangeSlide(currentSlideIndex, false);
+    //}
+
+    public void GenerateBubbles(int numSlides)
     {
-        Transform slides = transform.parent.Find("Slides");
-        if (slides == null)
-        {
-            Debug.LogWarning("Navigation did not find GameObject called Slides in " + transform.parent);
-            return;
-        }
-
-        GenerateBubbles(slides.childCount);
-    }
-
-    private void Start()
-    {
-        currentSlideIndex = 0;
-        ChangeSlide(currentSlideIndex, false);
-    }
-
-    private void GenerateBubbles(int numSlides)
-    {
-        Debug.Log("Found " + numSlides + " slides");
-
-        numSlides = 5;
-
         bubbles = (RectTransform)transform.Find("Bubbles");
         if (bubbles == null)
         {
+            Debug.LogWarning("Navigation could not find a child GameObject called Bubbles");
             return;
         }
-
-        float bubbleSize = bubbles.sizeDelta.y;
-        Vector2 containerSize = new Vector2(2 * numSlides * bubbleSize, bubbleSize);
-        bubbles.sizeDelta = containerSize;
 
         for (int i = 0; i < numSlides; i++)
         {
@@ -59,7 +52,8 @@ public class Navigation : MonoBehaviour
             Image bubbleImage = bubbleTransform.GetComponent<Image>();
             bubbleTransform.SetParent(bubbles);
             bubbleTransform.anchoredPosition = Vector2.zero;
-            bubbleTransform.sizeDelta = bubbleSize * Vector2.one;
+            bubbleTransform.sizeDelta = bubbles.sizeDelta.y * Vector2.one;
+            bubbleTransform.localScale = Vector3.one;
             bubbleImage.color -= new Color(0, 0, 0, bubbleImage.color.a);
             bubbleImage.preserveAspect = true;
         }
@@ -69,7 +63,7 @@ public class Navigation : MonoBehaviour
     {
         if (bubbles == null || filledDisk == null || openCircle == null)
         {
-            Debug.LogWarning("Must assign Filled Disk and Open Circle sprites in Navigation.");
+            Debug.LogWarning("Navigation > must assign Filled Disk and Open Circle sprites.");
             return;
         }
 
@@ -119,7 +113,7 @@ public class Navigation : MonoBehaviour
         }
     }
 
-    private void ChangeSlide(int slideIndex, bool sendMessage = true)
+    public void ChangeSlide(int slideIndex, bool sendMessage = true)
     {
         SetActiveBubble(slideIndex);
         SetButtonVisibility();
@@ -153,5 +147,10 @@ public class Navigation : MonoBehaviour
             currentSlideIndex = slideIndex;
             ChangeSlide(currentSlideIndex);
         }
+    }
+
+    public void SetCurrentSlideIndex(int slideIndex)
+    {
+        currentSlideIndex = slideIndex;
     }
 }

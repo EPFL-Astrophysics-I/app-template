@@ -9,14 +9,14 @@ public class LanguageToggle : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TextMeshProUGUI labelEN = default;
     [SerializeField] private TextMeshProUGUI labelFR = default;
 
-    private enum ActiveLanguage { EN, FR }
+    public enum ActiveLanguage { EN, FR }
     private ActiveLanguage activeLanguage = ActiveLanguage.EN;
     private bool canToggle = true;
 
     public void OnPointerClick(PointerEventData eventData)
     {
         ToggleLanguageDisplay();
-        SendMessageUpwards("ToggleLanguage", SendMessageOptions.DontRequireReceiver);
+        SendMessageUpwards("SetLanguage", activeLanguage.ToString(), SendMessageOptions.DontRequireReceiver);
     }
 
     private void Awake()
