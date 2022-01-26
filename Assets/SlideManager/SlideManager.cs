@@ -7,6 +7,12 @@ public class SlideManager : MonoBehaviour
     [SerializeField] private bool showHeader = true;
     [SerializeField] private int currentSlideIndex = 0;
 
+    [Header("Slide Transitions")]
+    [SerializeField, Min(0)] private float fadeInTime = 0.3f;
+    [SerializeField, Min(0)] private float fadeInDelay = 0f;
+    [SerializeField, Min(0)] private float fadeOutTime = 0.3f;
+    [SerializeField, Min(0)] private float fadeOutDelay = 0f;
+
     private Transform slides;
     private static Camera mainCamera;
 
@@ -130,7 +136,7 @@ public class SlideManager : MonoBehaviour
         if (prevSlide.TryGetComponent(out CanvasGroup prevCG))
         {
             prevCG.blocksRaycasts = false;
-            StartCoroutine(FadeSlide(prevCG, 0, 0.3f, 0.1f));
+            StartCoroutine(FadeSlide(prevCG, 0, fadeOutTime, fadeOutDelay));
         }
         // Release the current slide's camera reference
         if (prevSlide.TryGetComponent(out CameraController prevCC))
@@ -149,7 +155,7 @@ public class SlideManager : MonoBehaviour
         if (nextSlide.TryGetComponent(out CanvasGroup nextCG))
         {
             nextCG.blocksRaycasts = true;
-            StartCoroutine(FadeSlide(nextCG, 1, 0.3f, 0));
+            StartCoroutine(FadeSlide(nextCG, 1, fadeInTime, fadeInDelay));
         }
         // Pass the camera reference to the new slide and move it to the right place
         if (nextSlide.TryGetComponent(out CameraController nextCC))

@@ -4,17 +4,19 @@ using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour
 {
+    [Header("Background")]
     [SerializeField] private Color backgroundColor = Color.white;
-    [SerializeField] private Vector3 pivotPoint = Vector3.zero;
+    [SerializeField] private float colorTransitionTime = 0.5f;
 
     [Header("Orientation")]
     [SerializeField] private Vector3 position = new Vector3(0, 0, -100);
     [SerializeField] private Vector3 lookAt = new Vector3(0, 0, 0);
-    [SerializeField] private float lerpTime = 1f;
+    [SerializeField] private float moveTime = 1f;
 
     [Header("Controls")]
     [SerializeField] private bool orthographic;
     [SerializeField] private float fieldOfView = 20;
+    [SerializeField] private Vector3 pivotPoint = Vector3.zero;
     [SerializeField] private bool canRotateX;
     [SerializeField] private bool canRotateY;
     [SerializeField] private bool canZoom;
@@ -132,7 +134,7 @@ public class CameraController : MonoBehaviour
     {
         if (mainCamera.backgroundColor != backgroundColor)
         {
-            cameraChangingColor = StartCoroutine(LerpBackgroundColor(backgroundColor, lerpTime));
+            cameraChangingColor = StartCoroutine(LerpBackgroundColor(backgroundColor, colorTransitionTime));
         }
 
         // Always put the camera in perspective mode when moving
@@ -142,7 +144,7 @@ public class CameraController : MonoBehaviour
         if (mainCamera.transform.position != position || mainCamera.transform.rotation != targetRotation || mainCamera.fieldOfView != fieldOfView)
         {
             cameraMoving = StartCoroutine(MoveToPosition(mainCamera.transform.position, position, mainCamera.transform.rotation,
-                targetRotation, mainCamera.fieldOfView, fieldOfView, lerpTime));
+                targetRotation, mainCamera.fieldOfView, fieldOfView, moveTime));
         }
 
         cameraStartPosition = mainCamera.transform.position;
