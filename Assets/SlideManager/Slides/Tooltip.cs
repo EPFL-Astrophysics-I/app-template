@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] private CanvasGroup tips = default;
+    [SerializeField] private CanvasGroup tip = default;
     [SerializeField] private float fadeInTime = 0.15f;
     [SerializeField] private float fadeOutTime = 0.1f;
 
@@ -13,17 +13,17 @@ public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private void Awake()
     {
-        if (tips != null)
+        if (tip != null)
         {
-            tips.alpha = 0;
-            tips.interactable = false;
-            tips.blocksRaycasts = false;
+            tip.alpha = 0;
+            tip.interactable = false;
+            tip.blocksRaycasts = false;
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (tips != null)
+        if (tip != null)
         {
             //tips.alpha = 1;
             if (hideTipCoroutine != null)
@@ -31,13 +31,13 @@ public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 StopCoroutine(hideTipCoroutine);
                 hideTipCoroutine = null;
             }
-            showTipCoroutine = StartCoroutine(ShowTooltip(tips, fadeInTime));
+            showTipCoroutine = StartCoroutine(ShowTooltip(tip, fadeInTime));
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (tips != null)
+        if (tip != null)
         {
             //tips.alpha = 0;
             if (showTipCoroutine != null)
@@ -45,7 +45,7 @@ public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 StopCoroutine(showTipCoroutine);
                 showTipCoroutine = null;
             }
-            hideTipCoroutine = StartCoroutine(HideTooltip(tips, fadeOutTime));
+            hideTipCoroutine = StartCoroutine(HideTooltip(tip, fadeOutTime));
         }
     }
 
