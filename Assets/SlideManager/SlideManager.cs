@@ -68,6 +68,12 @@ public class SlideManager : MonoBehaviour
             return;
         }
 
+        if (slides.childCount == 0)
+        {
+            Debug.LogWarning("Slides GameObject does not contain any actual slides.");
+            return;
+        }
+
         // Activate the UI and associated simulations of the starting slide
         Transform slide = slides.GetChild(currentSlideIndex);
         if (slide.TryGetComponent(out CanvasGroup canvasGroup))
@@ -89,6 +95,11 @@ public class SlideManager : MonoBehaviour
 
     private void GenerateNavigationUI()
     {
+        if (slides == null)
+        {
+            return;
+        }
+
         // Create navigation bubbles and set the correct one active
         Transform navigation = transform.Find("Navigation");
         if (navigation == null)
@@ -107,11 +118,12 @@ public class SlideManager : MonoBehaviour
 
     public void LoadSlide(int slideIndex)
     {
-        Debug.Log("Slide Manager > Loading Slide index " + slideIndex);
         if (slides == null || currentSlideIndex == slideIndex)
         {
             return;
         }
+
+        //Debug.Log("Slide Manager > Loading Slide index " + slideIndex);
 
         // Turn off the current slide
         Transform prevSlide = slides.GetChild(currentSlideIndex);
