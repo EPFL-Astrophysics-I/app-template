@@ -189,4 +189,13 @@ public class SlideManager : MonoBehaviour
 
         canvasGroup.alpha = targetAlpha;
     }
+
+    public void HandleThemeChange(Color backgroundColor)
+    {
+        // Let LanguageToggle know to invert color theme
+        if (backgroundColor == Color.white || backgroundColor == Color.black)
+        {
+            BroadcastMessage("InvertColors", SendMessageOptions.DontRequireReceiver);
+        }
+    }
 }

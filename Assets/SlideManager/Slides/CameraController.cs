@@ -135,6 +135,7 @@ public class CameraController : MonoBehaviour
         if (mainCamera.backgroundColor != backgroundColor)
         {
             cameraChangingColor = StartCoroutine(LerpBackgroundColor(backgroundColor, colorTransitionTime));
+            SendMessageUpwards("HandleThemeChange", backgroundColor, SendMessageOptions.DontRequireReceiver);
         }
 
         // Always put the camera in perspective mode when moving

@@ -62,4 +62,22 @@ public class LanguageToggle : MonoBehaviour, IPointerClickHandler
             activeLanguage = ActiveLanguage.EN;
         }
     }
+
+    public void InvertColors()
+    {
+        Color tmp = activeColor;
+        activeColor = inactiveColor;
+        inactiveColor = tmp;
+
+        if (activeLanguage == ActiveLanguage.EN)
+        {
+            labelEN.color = activeColor;
+            labelFR.color = inactiveColor;
+        }
+        else
+        {
+            labelEN.color = inactiveColor;
+            labelFR.color = activeColor;
+        }
+    }
 }
