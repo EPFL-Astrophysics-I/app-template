@@ -24,6 +24,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float minZoom = 5;
     [SerializeField] private float maxZoom = 50;
 
+    [SerializeField] private AnimationCurve rotationCurve;
+
     private Camera mainCamera;
     private Coroutine cameraMoving;
     private Coroutine cameraChangingColor;
@@ -163,7 +165,7 @@ public class CameraController : MonoBehaviour
             float t = time / slideTime;
             t = t * t * (3f - 2f * t);  // Apply some smoothing
             mainCamera.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-            mainCamera.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, t);
+            mainCamera.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, rotationCurve.Evaluate(time / slideTime));
             mainCamera.fieldOfView = Mathf.Lerp(startFOV, targetFOV, t);
             yield return null;
         }
