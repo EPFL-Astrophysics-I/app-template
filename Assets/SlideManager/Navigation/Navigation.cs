@@ -18,24 +18,6 @@ public class Navigation : MonoBehaviour
     private RectTransform bubbles;
     private int currentSlideIndex;
 
-    //private void Awake()
-    //{
-    //    Transform slides = transform.parent.Find("Slides");
-    //    if (slides == null)
-    //    {
-    //        Debug.LogWarning("Navigation did not find GameObject called Slides in " + transform.parent);
-    //        return;
-    //    }
-
-    //    GenerateBubbles(slides.childCount);
-    //}
-
-    //private void Start()
-    //{
-    //    currentSlideIndex = 0;
-    //    ChangeSlide(currentSlideIndex, false);
-    //}
-
     public void GenerateBubbles(int numSlides)
     {
         bubbles = (RectTransform)transform.Find("Bubbles");
@@ -135,12 +117,14 @@ public class Navigation : MonoBehaviour
         ChangeSlide(currentSlideIndex);
     }
 
+    public void SetBubbleClickability(bool clickable)
+    {
+        bubblesAreClickable = clickable;
+    }
+
     public void HandleBubbleClick(int slideIndex)
     {
-        if (!bubblesAreClickable)
-        {
-            return;
-        }
+        if (!bubblesAreClickable) { return; }
 
         if (currentSlideIndex != slideIndex)
         {

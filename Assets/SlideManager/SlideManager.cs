@@ -4,8 +4,17 @@ using UnityEngine;
 
 public class SlideManager : MonoBehaviour
 {
+    [Header("Header")]
+    [SerializeField] private Transform header;
     [SerializeField] private bool showHeader = true;
+
+    [Header("Slides")]
+    [SerializeField] private Transform slideContainer;
     [SerializeField] private int currentSlideIndex = 0;
+
+    [Header("Navigation")]
+    [SerializeField] private Transform navigation;
+    [SerializeField] private bool clickableBubbles = true;
 
     [Header("Slide Transitions")]
     [SerializeField, Min(0)] private float fadeInTime = 0.3f;
@@ -13,40 +22,38 @@ public class SlideManager : MonoBehaviour
     [SerializeField, Min(0)] private float fadeOutTime = 0.3f;
     [SerializeField, Min(0)] private float fadeOutDelay = 0f;
 
-    private Transform slides;
     private static Camera mainCamera;
 
     private void Awake()
     {
         // Set header visibility
-        Transform header = transform.Find("Header");
         if (header != null)
         {
             header.gameObject.SetActive(showHeader);
         }
 
+        // Get reference to the main camera (to pass on to camera controllers)
+        mainCamera = Camera.main;
+
         // Get reference to the Slides container if it exists
-        slides = transform.Find("Slides");
-        if (slides == null)
+        if (slideContainer == null)
         {
-            Debug.LogWarning("SlideManager did not find a child GameObject called Slides.");
+            Debug.LogWarning("A SlideContainer has not been assigned.");
+            return;
         }
 
         // Hide all UI elements of each slide using its CanvasGroup
-        foreach (var canvasGroup in GetComponentsInChildren<CanvasGroup>())
+        foreach (var canvasGroup in slideContainer.GetComponentsInChildren<CanvasGroup>())
         {
             canvasGroup.alpha = 0;
             canvasGroup.blocksRaycasts = false;
         }
 
         // Turn off all simulations initially that have an associated SlideController
-        foreach (var slideController in GetComponentsInChildren<SimulationSlideController>())
+        foreach (var slideController in slideContainer.GetComponentsInChildren<SimulationSlideController>())
         {
             slideController.DeactivateSimulation();
         }
-
-        // Get reference to the main camera (to pass on to camera controllers)
-        mainCamera = Camera.main;
     }
 
     private void Start()
@@ -69,19 +76,17 @@ public class SlideManager : MonoBehaviour
 
     private void InitializeSlides()
     {
-        if (slides == null)
-        {
-            return;
-        }
+        // Do nothing if no slide container is assigned or if it has no slides
+        if (slideContainer == null) { return; }
 
-        if (slides.childCount == 0)
+        if (slideContainer.childCount == 0)
         {
             Debug.LogWarning("Slides GameObject does not contain any actual slides.");
             return;
         }
 
         // Activate the UI and associated simulations of the starting slide
-        Transform slide = slides.GetChild(currentSlideIndex);
+        Transform slide = slideContainer.GetChild(currentSlideIndex);
         if (slide.TryGetComponent(out CanvasGroup canvasGroup))
         {
             canvasGroup.alpha = 1;
@@ -101,22 +106,20 @@ public class SlideManager : MonoBehaviour
 
     private void GenerateNavigationUI()
     {
-        if (slides == null)
-        {
-            return;
-        }
+        // Do not create navigation UI if there are no slides
+        if (slideContainer == null) { return; }
 
-        // Create navigation bubbles and set the correct one active
-        Transform navigation = transform.Find("Navigation");
         if (navigation == null)
         {
             Debug.LogWarning("SlideManager did not find a child GameObject called Navigation.");
             return;
         }
 
+        // Create navigation bubbles and set the correct one active
         if (navigation.TryGetComponent(out Navigation nav))
         {
-            nav.GenerateBubbles(slides.childCount);
+            nav.SetBubbleClickability(clickableBubbles);
+            nav.GenerateBubbles(slideContainer.childCount);
             nav.SetCurrentSlideIndex(currentSlideIndex);
             nav.ChangeSlide(currentSlideIndex, false);
         }
@@ -124,7 +127,7 @@ public class SlideManager : MonoBehaviour
 
     public void LoadSlide(int slideIndex)
     {
-        if (slides == null || currentSlideIndex == slideIndex)
+        if (slideContainer == null || currentSlideIndex == slideIndex)
         {
             return;
         }
@@ -132,7 +135,7 @@ public class SlideManager : MonoBehaviour
         //Debug.Log("Slide Manager > Loading Slide index " + slideIndex);
 
         // Turn off the current slide
-        Transform prevSlide = slides.GetChild(currentSlideIndex);
+        Transform prevSlide = slideContainer.GetChild(currentSlideIndex);
         if (prevSlide.TryGetComponent(out CanvasGroup prevCG))
         {
             prevCG.blocksRaycasts = false;
@@ -151,7 +154,7 @@ public class SlideManager : MonoBehaviour
         }
 
         // Turn on the new slide
-        Transform nextSlide = slides.GetChild(slideIndex);
+        Transform nextSlide = slideContainer.GetChild(slideIndex);
         if (nextSlide.TryGetComponent(out CanvasGroup nextCG))
         {
             nextCG.blocksRaycasts = true;
@@ -192,10 +195,14 @@ public class SlideManager : MonoBehaviour
 
     public void HandleThemeChange(Color backgroundColor)
     {
-        // Let LanguageToggle know to invert color theme
-        if (backgroundColor == Color.white || backgroundColor == Color.black)
+        if (backgroundColor == Color.white)
         {
-            BroadcastMessage("InvertColors", SendMessageOptions.DontRequireReceiver);
+            BroadcastMessage("SetLightTheme", SendMessageOptions.DontRequireReceiver);
+        }
+
+        if (backgroundColor == Color.black)
+        {
+            BroadcastMessage("SetDarkTheme", SendMessageOptions.DontRequireReceiver);
         }
     }
 }

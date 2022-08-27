@@ -8,7 +8,7 @@ public class Vector : MonoBehaviour
     [SerializeField, Min(0.01f)] private float _lineWidth = 0.1f;
     [SerializeField] private Color _color = Color.black;
     [SerializeField] private Vector3 _tailPosition = Vector3.zero;
-    [SerializeField] private Vector3 _headPosition = Vector3.right;
+    [SerializeField] private Vector3 _headPosition = 2 * Vector3.right + Vector3.up;
     [Min(0)] public int bodyEndCapVertices = 0;
 
     [Header("Head")]
@@ -223,55 +223,57 @@ public class Vector : MonoBehaviour
 
     private void UpdateLabel()
     {
-        if (label != null)
+        if (label == null)
         {
-            if (Displacement.magnitude > 0)
-            {
-                Vector3 localXHat = Displacement.normalized;
-                Vector3 localZHat;
-                // Determine head orientation
-                switch (headAlignment)
-                {
-                    case AlignAxis.X:
-                        localZHat = Vector3.Cross(localXHat, Vector3.right);
-                        if (localZHat == Vector3.zero)
-                        {
-                            // Default to XY plane
-                            localZHat = Vector3.back;
-                        }
-                        break;
-                    case AlignAxis.Y:
-                        localZHat = Vector3.Cross(localXHat, Vector3.up);
-                        if (localZHat == Vector3.zero)
-                        {
-                            // Default to XY plane
-                            localZHat = Vector3.back;
-                        }
-                        break;
-                    case AlignAxis.Z:
-                        localZHat = Vector3.Cross(localXHat, Vector3.back);
-                        if (localZHat == Vector3.zero)
-                        {
-                            // Default to ZX plane
-                            localZHat = Vector3.up;
-                        }
-                        break;
-                    default:
-                        localZHat = Vector3.zero;
-                        break;
-                }
-                Vector3 localYHat = Vector3.Cross(localZHat, localXHat);
-                label.position = TailPosition;
-                label.position += labelPosition * Displacement.magnitude * localXHat;
-                label.position += labelOffset * localYHat;
-            }
+            return;
+        }
 
-            if (label.TryGetComponent(out SpriteRenderer renderer))
+        if (Displacement.magnitude > 0)
+        {
+            Vector3 localXHat = Displacement.normalized;
+            Vector3 localZHat;
+            // Determine head orientation
+            switch (headAlignment)
             {
-                if (renderer.color != Color)
-                {
-                    renderer.color = Color;
-                }
+                case AlignAxis.X:
+                    localZHat = Vector3.Cross(localXHat, Vector3.right);
+                    if (localZHat == Vector3.zero)
+                    {
+                        // Default to XY plane
+                        localZHat = Vector3.back;
+                    }
+                    break;
+                case AlignAxis.Y:
+                    localZHat = Vector3.Cross(localXHat, Vector3.up);
+                    if (localZHat == Vector3.zero)
+                    {
+                        // Default to XY plane
+                        localZHat = Vector3.back;
+                    }
+                    break;
+                case AlignAxis.Z:
+                    localZHat = Vector3.Cross(localXHat, Vector3.back);
+                    if (localZHat == Vector3.zero)
+                    {
+                        // Default to ZX plane
+                        localZHat = Vector3.up;
+                    }
+                    break;
+                default:
+                    localZHat = Vector3.zero;
+                    break;
+            }
+            Vector3 localYHat = Vector3.Cross(localZHat, localXHat);
+            label.localPosition = TailPosition;
+            label.localPosition += labelPosition * Displacement.magnitude * localXHat;
+            label.localPosition += labelOffset * localYHat;
+        }
+
+        if (label.TryGetComponent(out SpriteRenderer renderer))
+        {
+            if (renderer.color != Color)
+            {
+                renderer.color = Color;
             }
         }
     }

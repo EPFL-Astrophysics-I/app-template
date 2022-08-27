@@ -134,11 +134,13 @@ public class CameraController : MonoBehaviour
 
     public void InitializeCamera()
     {
-        if (mainCamera.backgroundColor != backgroundColor)
+        if (!CompareRGB(mainCamera.backgroundColor, backgroundColor))
         {
             cameraChangingColor = StartCoroutine(LerpBackgroundColor(backgroundColor, colorTransitionTime));
-            SendMessageUpwards("HandleThemeChange", backgroundColor, SendMessageOptions.DontRequireReceiver);
         }
+
+        // Let SlideManager know the slide's background color to trigger LanguageToggle
+        SendMessageUpwards("HandleThemeChange", backgroundColor, SendMessageOptions.DontRequireReceiver);
 
         // Always put the camera in perspective mode when moving
         mainCamera.orthographic = false;
@@ -196,5 +198,10 @@ public class CameraController : MonoBehaviour
         }
 
         mainCamera.backgroundColor = targetColor;
+    }
+
+    private bool CompareRGB(Color color1, Color color2)
+    {
+        return (color1.r == color2.r) && (color1.g == color2.g) && (color1.b == color2.b);
     }
 }
