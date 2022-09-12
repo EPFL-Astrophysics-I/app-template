@@ -405,7 +405,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 194346327}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -746,11 +746,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -1129015340585624399, guid: 350cfcf20da78478f9197161ac83b480,
         type: 2}
-    - target: {fileID: 8024456726960174142, guid: 530a8da8d3ab0474bb23a9e31173322c,
-        type: 3}
-      propertyPath: m_Alpha
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 530a8da8d3ab0474bb23a9e31173322c, type: 3}
 --- !u!1 &418900017
